@@ -1,10 +1,11 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, DateTime, ForeignKey
 from datetime import datetime
-from main import Base
 
-class Transaction(Base):
-    __tablename__ = 'transactions'
-    transaction_id = Column(Integer, primary_key=True, index=True)
-    customer_id = Column(Integer, ForeignKey("customers.customer_id"))
-    product_id = Column(Integer, ForeignKey("products.product_id"))
-    purchase_date = Column(DateTime, default=datetime.utcnow)
+def get_transaction_model(Base):
+    class Transaction(Base):
+        __tablename__ = 'transactions'
+        id = Column(Integer, primary_key=True)
+        customer_id = Column(Integer, ForeignKey("customers.id"))
+        product_id = Column(Integer, ForeignKey("products.id"))
+        timestamp = Column(DateTime, default=datetime.utcnow)
+    return Transaction
