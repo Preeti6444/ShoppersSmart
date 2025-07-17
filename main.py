@@ -1,45 +1,39 @@
 from fastapi import FastAPI, HTTPException, Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
-from routes.customer_routes import router as customer_router
 from models.customer import get_customer_model
 from models.product import get_product_model
 from models.transaction import get_transaction_model
+from routes.customer_routes import router as customer_router
+from routes.product_routes import router as product_router
+from routes.transaction_routes import router as transaction_router
+
 from sklearn.neighbors import NearestNeighbors
 import pandas as pd
-import numpy as np
-
-# Define Base
-Base = declarative_base()
 
 # FastAPI app
 app = FastAPI()
+
+# Register routers
 app.include_router(customer_router)
+app.include_router(product_router)
+app.include_router(transaction_router)
 
 # Database setup
 DATABASE_URL = "sqlite:///shopper.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-Base.metadata.create_all(bind=engine)
+Base = declarative_base()
 SessionLocal = sessionmaker(bind=engine)
 session = SessionLocal()
 
-# Models
+# Load models
 Customer = get_customer_model(Base)
 Product = get_product_model(Base)
 Transaction = get_transaction_model(Base)
 
-# Create Customer
-@app.post("/customers/")
-def create_customer(name: str, email: str):
-    existing = session.query(Customer).filter(Customer.email == email).first()
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already exists")
-    customer = Customer(name=name, email=email)
-    session.add(customer)
-    session.commit()
-    return {"message": "Customer created", "id": customer.id}
+Base.metadata.create_all(bind=engine)
 
-# Recommend Products
+# ML: Recommend products
 @app.get("/recommend/{customer_id}")
 def recommend_products(customer_id: int = Path(..., title="Customer ID")):
     transactions = session.query(Transaction).all()
@@ -66,10 +60,8 @@ def recommend_products(customer_id: int = Path(..., title="Customer ID")):
     neighbor_products = set(neighbor_data["product_id"])
 
     recommended_ids = list(neighbor_products - user_products)
-    if not recommended_ids:
-        return {"message": "No new products to recommend", "recommendations": []}
-
     recommended_products = session.query(Product).filter(Product.id.in_(recommended_ids)).all()
+
     return {
         "recommended_products": [
             {"id": p.id, "name": p.name, "category": p.category, "price": p.price}

@@ -1,14 +1,29 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from models.transaction import Transaction
-from main import get_db
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from datetime import datetime
+from models.transaction import get_transaction_model
+
+# DB setup
+DATABASE_URL = "sqlite:///shopper.db"
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+Base = declarative_base()
+SessionLocal = sessionmaker(bind=engine)
+
+Transaction = get_transaction_model(Base)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 router = APIRouter()
 
 @router.post("/transactions/")
 def create_transaction(transaction: dict, db: Session = Depends(get_db)):
-    new_transaction = Transaction(**transaction, purchase_date=datetime.utcnow())
+    new_transaction = Transaction(**transaction, timestamp=datetime.utcnow())
     db.add(new_transaction)
     db.commit()
     db.refresh(new_transaction)
@@ -20,14 +35,14 @@ def get_all_transactions(db: Session = Depends(get_db)):
 
 @router.get("/transactions/{transaction_id}")
 def get_transaction(transaction_id: int, db: Session = Depends(get_db)):
-    transaction = db.query(Transaction).filter(Transaction.transaction_id == transaction_id).first()
+    transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
     return transaction
 
 @router.put("/transactions/{transaction_id}")
 def update_transaction(transaction_id: int, update_data: dict, db: Session = Depends(get_db)):
-    transaction = db.query(Transaction).filter(Transaction.transaction_id == transaction_id).first()
+    transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
     for key, value in update_data.items():
@@ -37,7 +52,7 @@ def update_transaction(transaction_id: int, update_data: dict, db: Session = Dep
 
 @router.delete("/transactions/{transaction_id}")
 def delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
-    transaction = db.query(Transaction).filter(Transaction.transaction_id == transaction_id).first()
+    transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
     db.delete(transaction)
