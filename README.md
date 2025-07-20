@@ -293,10 +293,12 @@ Terminal showing running server & routes
 
 Project by Preeti Vaychal
 
-GitHub: <img width="1920" height="1020" alt="FastAPI - Swagger UI - Google Chrome 7_20_2025 2_42_24 PM" src="https://github.com/user-attachments/assets/2be5c492-fde2-433e-bbe8-1faea6991f42" />
+GitHub: https://github.com/Preeti6444/ShoppersSmart.git
+
+<img width="1920" height="1020" alt="FastAPI - Swagger UI - Google Chrome 7_20_2025 2_42_24 PM" src="https://github.com/user-attachments/assets/2be5c492-fde2-433e-bbe8-1faea6991f42" />
 <img width="1920" height="1020" alt="FastAPI - Swagger UI - Google Chrome 7_20_2025 2_43_19 PM" src="https://github.com/user-attachments/assets/c7722c0a-77dd-41b8-830b-31bd48cd3096" />
 <img width="1920" height="1020" alt="FastAPI - Swagger UI - Google Chrome 7_20_2025 2_43_28 PM" src="https://github.com/user-attachments/assets/f951710d-008f-498f-9132-add7410a7e2d" />
 <img width="1920" height="1020" alt="FastAPI - Swagger UI - Google Chrome 7_20_2025 2_43_37 PM" src="https://github.com/user-attachments/assets/28f19579-9dfb-4074-b78d-df3b1bc0c236" />
 
 
-LinkedIn: 
+LinkedIn: https://www.linkedin.com/posts/preeti-vaychal-0885a0296_launching-my-new-project-shoppersmart-activity-7352764057248030723-agox?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEeiRmgBn2CvopcKnJpli6GqzMZma_Lguuc
