@@ -68,3 +68,7 @@ def recommend_products(customer_id: int = Path(..., title="Customer ID")):
             for p in recommended_products
         ]
     }
+    
+@app.get("/")
+def root():
+    return {"message": "Welcome to ShopperSmart API! Visit /docs to explore the API."}
